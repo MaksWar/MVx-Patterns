@@ -10,8 +10,8 @@ Each branch contains a separate implementation of a specific approach, such as *
 ## Available Branches
 
 | Branch | Pattern              | Description                                     |
-| ------ | -------------------- | ----------------------------------------------- |
-| `main` | —                    | General repository overview                     |
+| ------ |----------------------| ----------------------------------------------- |
+| `main` | -                    | General repository overview                     |
 | `MVP`  | Model-View-Presenter | MVP-based implementation for Unity window logic |
 
 More branches may be added later as new architectural approaches are implemented.
