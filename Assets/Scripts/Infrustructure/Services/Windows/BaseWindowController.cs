@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Infrustructure.Services.UI;
 using Infrustructure.Services.Windows.Animations;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -9,12 +10,6 @@ using Zenject;
 
 namespace Infrustructure.Services.Windows
 {
-    public enum WindowGuiLayer
-    {
-        GUI = 0,
-        GUIOverHUD = 1
-    }
-
     public abstract class BaseWindowController : MonoBehaviour
     {
         [SerializeField] private RectTransform content;

@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Infrustructure.Services.Windows
+namespace Infrustructure.Services.UI
 {
-    public class OverHUDController : MonoBehaviour
+    public class GUIController : MonoBehaviour
     {
         [SerializeField] private Transform windowsRoot;
 
-        public static OverHUDController Instance { get; private set; }
+        public static GUIController Instance { get; private set; }
 
         public Transform WindowsRoot => windowsRoot;
 

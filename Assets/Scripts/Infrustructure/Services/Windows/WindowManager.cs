@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Infrustructure.AssetManagement;
+using Infrustructure.Services.UI;
 using UnityEngine;
 using Zenject;
 
@@ -10,33 +11,34 @@ namespace Infrustructure.Services.Windows
     {
         private readonly DiContainer _diContainer;
         private readonly IAssetsProvider _assetProvider;
+        private readonly IWindowRootProvider _windowRootProvider;
+        private readonly IUIRootInitializer _uiRootInitializer;
 
         private readonly Dictionary<string, BaseWindowController> _windowInstances = new();
 
         private string _windowInProcess;
         private BaseWindowController _currentWindow;
 
-        private Transform WindowsRoot => GUIController.Instance.WindowsRoot;
-        private Transform OverHudWindowsRoot => OverHUDController.Instance.WindowsRoot;
-
         public WindowsManager(DiContainer diContainer, IAssetsProvider assetProvider)
+            : this(diContainer, assetProvider, new WindowRootProvider(), new UIRootInitializer(diContainer, assetProvider))
+        {
+        }
+
+        [Inject]
+        public WindowsManager(
+            DiContainer diContainer,
+            IAssetsProvider assetProvider,
+            IWindowRootProvider windowRootProvider,
+            IUIRootInitializer uiRootInitializer)
         {
             _assetProvider = assetProvider;
             _diContainer = diContainer;
+            _windowRootProvider = windowRootProvider;
+            _uiRootInitializer = uiRootInitializer;
         }
 
-        public async UniTask InitializeAsync()
-        {
-            var guiControllerPrefab = await _assetProvider.Load<GameObject>(GetPrefabName("GUI"), GetType());
-            var guiOverHudControllerPrefab = await _assetProvider.Load<GameObject>(GetPrefabName("GUIOverHUD"), GetType());
-            var backgroundPrefab = await _assetProvider.Load<GameObject>(GetPrefabName("Background"), GetType());
-
-            GameObject guiInstance = _diContainer.InstantiatePrefab(guiControllerPrefab);
-            guiInstance.name = "GUI";
-
-            GameObject guiOverHudInstance = _diContainer.InstantiatePrefab(guiOverHudControllerPrefab);
-            guiOverHudInstance.name = "GUIOverHUD";
-        }
+        public UniTask InitializeAsync() =>
+            _uiRootInitializer.InitializeAsync();
 
         public async UniTask OpenWindowAsync(string windowName, BaseWindowParams customParams = null)
         {
@@ -173,9 +175,7 @@ namespace Infrustructure.Services.Windows
         }
 
         private Transform GetWindowParent(WindowGuiLayer guiLayer) =>
-            guiLayer == WindowGuiLayer.GUIOverHUD
-                ? OverHudWindowsRoot != null ? OverHudWindowsRoot : WindowsRoot
-                : WindowsRoot;
+            _windowRootProvider.GetRoot(guiLayer);
 
         private static WindowGuiLayer GetDefaultGuiLayer(GameObject prefab)
         {
