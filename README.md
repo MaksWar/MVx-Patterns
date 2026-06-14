@@ -369,12 +369,6 @@ await _windowsManager.OpenWindowAsync(
 
 ## Design Decisions
 
-**Why UniTask and not coroutines?**
-UniTask allows `await`-based sequencing for animations without the fragility of `StartCoroutine` chains. Open and close animations are truly sequential - `PlayOpenAsync` completes before `AfterOpen` fires.
-
-**Why not MVVM with data binding?**
-Unity's UI systems (uGUI) don't have a native binding layer. Introducing one adds complexity without clear benefit for typical mobile game UIs where the view is manually driven. The Presenter explicitly pushes data to the View, which is easier to trace and debug.
-
 **Why session caching?**
 Window prefabs are instantiated once and hidden rather than destroyed between opens. This avoids repeated asset loading and Addressables overhead for frequently-used windows like inventories or shops.
 
