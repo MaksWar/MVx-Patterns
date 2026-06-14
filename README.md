@@ -43,7 +43,7 @@ IWindowsManager
       └── manages session lifecycle
 ```
 
-The orchestration layer (`WindowsManager`, `WindowFactory`, `WindowSession`) is completely separate from the MVP triad itself. Each concrete window only needs to define its own `View`, `Model`, `Presenter`, and `PresenterFactory` — the rest is handled automatically.
+The orchestration layer (`WindowsManager`, `WindowFactory`, `WindowSession`) is completely separate from the MVP triad itself. Each concrete window only needs to define its own `View`, `Model`, `Presenter`, and `PresenterFactory` - the rest is handled automatically.
 
 ---
 
@@ -64,7 +64,7 @@ public abstract class BaseWindowModel<TArgs> : IWindowModel
 
 The Model is a plain data container. It holds the arguments passed when the window was opened (`TArgs`) and the display options (`WindowOptions`). It contains no Unity-specific code and no references to the View or Presenter.
 
-`WindowArgs` is an empty base class — extend it to pass any data your specific window needs:
+`WindowArgs` is an empty base class - extend it to pass any data your specific window needs:
 
 ```csharp
 public class ShopWindowArgs : WindowArgs
@@ -117,7 +117,7 @@ public abstract class BaseWindowPresenter<TView, TModel, TArgs> : IWindowPresent
 
 The Presenter is the active layer. It:
 
-- Receives typed `TArgs` and `TModel` — no untyped casts
+- Receives typed `TArgs` and `TModel` - no untyped casts
 - Calls `View.PlayOpenAsync()` / `View.PlayCloseAsync()` to drive animations
 - Listens to `View.CloseClicked` and delegates back to `IWindowsManager`
 - Exposes lifecycle hooks for concrete subclasses to inject custom logic
@@ -150,10 +150,10 @@ public interface IWindowsManager
 
 `WindowsManager` is the single point of entry for all window operations. It handles:
 
-- **Session caching** — each window is instantiated once and reused; prefabs are not destroyed between opens
-- **Sequential open/close** — opening a new window automatically closes the current one before proceeding
-- **GUI layer routing** — moves the view's `Transform` to the correct canvas root (`GUI` or `GUIOverHUD`) based on `WindowOptions` or the View's default `GuiLayer`
-- **In-process guard** — `_windowInProcess` prevents re-entrant opens for the same window
+- **Session caching** - each window is instantiated once and reused; prefabs are not destroyed between opens
+- **Sequential open/close** - opening a new window automatically closes the current one before proceeding
+- **GUI layer routing** - moves the view's `Transform` to the correct canvas root (`GUI` or `GUIOverHUD`) based on `WindowOptions` or the View's default `GuiLayer`
+- **In-process guard** - `_windowInProcess` prevents re-entrant opens for the same window
 
 ### WindowFactory
 
@@ -165,7 +165,7 @@ public interface IWindowsManager
 4. Delegates Presenter creation to a registered `IWindowPresenterFactory`
 5. Calls `view.InitializeAsync()` and `view.ResetTransform()` before returning
 
-If no factory can handle the window name, or the prefab root is missing `IWindowView`, the factory logs an error and returns `null` — nothing crashes silently.
+If no factory can handle the window name, or the prefab root is missing `IWindowView`, the factory logs an error and returns `null` - nothing crashes silently.
 
 ### WindowSession
 
@@ -221,7 +221,7 @@ Container.Bind<IWindowPresenterFactory>().To<ShopWindowPresenterFactory>().AsSin
 | `AfterClose()` | After `View.PlayCloseAsync()` completes |
 | `AfterCloseAsync()` | After `View.PlayCloseAsync()` completes (async) |
 
-Override only what you need — the defaults are all no-ops.
+Override only what you need - the defaults are all no-ops.
 
 ### WindowOptions & WindowArgs
 
@@ -237,7 +237,7 @@ public class WindowOptions
 }
 ```
 
-`WindowArgs` is the typed data payload. Subclass it per window — the base class is empty by design so windows with no arguments still compile without boilerplate.
+`WindowArgs` is the typed data payload. Subclass it per window - the base class is empty by design so windows with no arguments still compile without boilerplate.
 
 ### WindowGuiLayer
 
@@ -370,7 +370,7 @@ await _windowsManager.OpenWindowAsync(
 ## Design Decisions
 
 **Why UniTask and not coroutines?**
-UniTask allows `await`-based sequencing for animations without the fragility of `StartCoroutine` chains. Open and close animations are truly sequential — `PlayOpenAsync` completes before `AfterOpen` fires.
+UniTask allows `await`-based sequencing for animations without the fragility of `StartCoroutine` chains. Open and close animations are truly sequential - `PlayOpenAsync` completes before `AfterOpen` fires.
 
 **Why not MVVM with data binding?**
 Unity's UI systems (uGUI) don't have a native binding layer. Introducing one adds complexity without clear benefit for typical mobile game UIs where the view is manually driven. The Presenter explicitly pushes data to the View, which is easier to trace and debug.
